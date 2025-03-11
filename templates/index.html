@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Chatbot OpenAI</title>
+  <style>
+    /* Estilos básicos para el chat */
+    body { font-family: Arial, sans-serif; margin: 20px; }
+    #chat-output p { margin: 5px 0; }
+    #chat-container { max-width: 600px; margin: auto; }
+    #chat-input { width: 80%; padding: 10px; }
+    #send-btn { padding: 10px; }
+  </style>
+</head>
+<body>
+  <div id="chat-container">
+    <h1>Chatbot OpenAI</h1>
+    <div id="chat-output"></div>
+    <input type="text" id="chat-input" placeholder="Escribe tu mensaje">
+    <button id="send-btn">Enviar</button>
+  </div>
+
+  <script>
+    document.getElementById("send-btn").addEventListener("click", async () => {
+      const input = document.getElementById("chat-input");
+      const message = input.value;
+      if (!message.trim()) return;
+
+      // Muestra el mensaje del usuario en la pantalla
+      const chatOutput = document.getElementById("chat-output");
+      chatOutput.innerHTML += `<p><strong>Tú:</strong> ${message}</p>`;
+      
+      // Envía el mensaje al backend
+      const response = await fetch("/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message })
+      });
+
+      const data = await response.json();
+      chatOutput.innerHTML += `<p><strong>Bot:</strong> ${data.reply}</p>`;
+
+      // Limpia el campo de entrada
+      input.value = "";
+    });
+  </script>
+</body>
+</html>
